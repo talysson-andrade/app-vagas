@@ -9,7 +9,7 @@ const LoginScreen = () => {
 
   const handleLogin = () => {
     // Aqui você pode adicionar lógica para autenticar o usuário
-    navigation.navigate('Vagas');
+    navigation.navigate('ListaVagasScreen');
   };
   const handleSignIn = () => {
     navigation.navigate('SignOnScreen');
