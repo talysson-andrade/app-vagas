@@ -4,6 +4,11 @@ class Vaga {
     this.empresa = empresa;
     this.modalidade = modalidade
   }
+    Vaga(nome, empresa, modalidade){
+    this.nome = nome;
+    this.empresa = empresa;
+    this.modalidade = modalidade
+  }
 
 }
 

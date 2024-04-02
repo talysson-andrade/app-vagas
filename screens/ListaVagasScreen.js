@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import Header from '../components/header'
 import {Vaga} from '../entities/Vaga'
+import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
 
 
 const ListaVagas = () => {
+
+
   const [data, setData] = useState([
-    { id: '2', name: 'Fullstack Software Engineer', empresa: 'Plan A Technologies', modalidade: 'Remoto' },
     { id: '3', name: 'Fullstack Software Engineer', empresa: 'Plan A Technologies', modalidade: 'Remoto' },
     { id: '4', name: 'Fullstack Software Engineer', empresa: 'Plan A Technologies', modalidade: 'Remoto' },
     { id: '5', name: 'Fullstack Software Engineer', empresa: 'Plan A Technologies', modalidade: 'Remoto' },
@@ -19,26 +21,21 @@ const ListaVagas = () => {
     { id: '12', name: 'Fullstack Software Engineer', empresa: 'Plan A Technologies', modalidade: 'Remoto' },
     { id: '13', name: 'Fullstack Software Engineer', empresa: 'Plan A Technologies', modalidade: 'Remoto' },
     { id: '14', name: 'Fullstack Software Engineer', empresa: 'Plan A Technologies', modalidade: 'Remoto' },
-    { id: '15', name: 'Fullstack Software Engineer', empresa: 'Plan A Technologies', modalidade: 'Remoto' },
+    { id: '15', name: 'Fullstack Software Engineer', empresa: 'Plan A Technologies', modalidade: 'Remoto', descricao:"Nível: AnalistaCusos de: Bacharelado em Publicidade e propaganda,MarketingEscolaridade: Graduação - CompletoTipo de contrato: CLTJornada de trabalho: De Segunda à Sexta-Feira das 09h ás 19hBenefícios: 🍔 Vale Refeição de R$ 40,00, 🩺 Assistência Médica, 🦷 Assistência Odontológica, 🤍 Seguro de Vida, TotalPassResponsabilidades e Experiências DesejáveisMUDANDO VIDAS A PARTIR DO COACHING INTEGRAL SISTÊMICO.Com matriz em Barueri (SP), filial em Fortaleza (CE) e núcleos em mais de 40 cidades do Brasil, incluindo EUA e mais três continentes, a Febracis já impactou mais de 70 milhões pessoas ao longo de sua trajetória. A história da instituição tem início em 1998, ainda como Instituto Paulo Vieira e só depois passa a ser chamada Febracis, reforçando a continuidade do compromisso em atender seus clientes com respeito e responsabilidade. A atuação da Febracis é destaque no mercado por transformar vidas por meio do Coaching Integral Sistêmico (CIS), um processo que se adequa à"}
   ]);
+  const navigation = useNavigation();
 
-  
-  const [vagas, setVagas] = useState([]);
+  const handleVagaClick = (item) =>{
+    navigation.navigate('DetalheVagaScreen', item );
+  }
 
-  
-
-  const loadVagas = () => {
- 
-    
-  };
-  loadVagas();
   const renderItem = ({ item }) => (
-    <View style={styles.item}>
-      <Text style ={styles.nameText}>{item.name}</Text>
-      <Text style = {styles.empresaText}>{item.empresa}</Text>
+    <TouchableOpacity style={styles.item} onPress={() =>handleVagaClick(item)}>
+      <Text style={styles.nameText}>{item.name}</Text>
+      <Text style={styles.empresaText}>{item.empresa}</Text>
       <Text>{item.modalidade}</Text>
-    </View>
-  );
+    </TouchableOpacity>
+  )
 
   return (
     <View style={styles.container}>
