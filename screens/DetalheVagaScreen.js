@@ -1,6 +1,5 @@
 import { View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import Header from '../components/header'
-import {Vaga} from '../entities/Vaga'
 import { useNavigation } from '@react-navigation/native';
 
 const DetalheVagaScreen = ({route}) => {
@@ -11,7 +10,6 @@ const DetalheVagaScreen = ({route}) => {
       <Text style={styles.text}>Empresa: {empresa}</Text>
       <Text style={styles.text}>Modalidade: {modalidade}</Text>
       <Text style={styles.text}>Descrição: {descricao}</Text>
-      {/* Adicione mais informações da vaga aqui, se necessário */}
     </View>
   );
 };
