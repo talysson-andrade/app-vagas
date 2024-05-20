@@ -4,6 +4,32 @@ import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import {image} from 'react-native';
 import logo from './assets/estacio.png';
+import firebase from './configFirebase'
+
+const db = firebase.database()
+const sha256 = require('js-sha256');
+
+function sendDataUser(nome, email, cpf, senha){
+  const newUserKey = db.ref().child('/users').push().key;
+  const userPath = '/users'
+  const userData = {
+    name: nome,
+    email: email,
+    cpf: cpf,
+    senha: senha,
+    isAdmin: false
+  };
+   let updates = {};
+  // Adiciona os dados do usuário ao objeto
+  updates[`${userPath}/${newUserKey}`] = userData;
+  // Envia os dados para o Firebase
+  return db.ref().update(updates);
+}
+
+function generateSHA(text){
+const hash = sha256(text);
+return hash;
+}
 
 const CadastroUsuario = () => {
   const [nome, setNome] = useState('');
@@ -117,14 +143,20 @@ const CadastroUsuario = () => {
     return;
   }
 
-    if (!validarSenha()) {
-      Alert.alert('Erro', 'As senhas não coincidem.');
-      return;
-    }
-
+  if (!validarSenha()) {
+    Alert.alert('Erro', 'As senhas não coincidem.');
+    return;
+  }
+    sendDataUser(nome, email, cpf, generateSHA(senha))
+    .then(() => {
+    console.log("Dados do usuário enviados com sucesso para o Firebase!");
+  })
+  .catch((error) => {
+    console.error("Erro ao enviar dados para o Firebase:", error);
+  });
     // Aqui você pode prosseguir com o cadastro do usuário
     Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
-    navigation.navigate('Vagas'); // Navegue para a tela de vagas após o cadastro bem-sucedido
+    navigation.navigate('Vagas');
   };
 
   const handleLoginPress = () => {
@@ -193,7 +225,7 @@ const CadastroUsuario = () => {
         </View>
 
         <View>
-        <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
+        <TouchableOpacity style={styles.button} onPress={cadastrarUsuario}>
           <Text style={styles.buttonText}>Cadastre-se</Text>
         </TouchableOpacity>
       </View>

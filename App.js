@@ -9,6 +9,7 @@ import VagasScreen from './VagasScreen';
 import DetalhesVagasScreen from './DescricaoVagaScreen';
 import UserScreen from './UserScreen';
 
+
 const Stack = createStackNavigator();
 
 const App = () => {

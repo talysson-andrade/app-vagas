@@ -14,7 +14,6 @@ const LoginScreen = ({ navigation }) => {
     // Aqui você pode fazer a validação do email e senha
     // Se for válido, navegue para a próxima tela
     if (email && password) {
-      // Navegue para a próxima tela
      navigation.navigate('Vagas'); // Substitua 'Main' pelo nome da tela que você quer navegar
     } else {
       alert('Por favor, insira seu email e senha.');
@@ -87,24 +86,20 @@ const styles = StyleSheet.create({
     marginRight: 0,
     marginTop: 10,
     textAlign: 'center',
-    top: -50,
+
   },
    buttonText: {
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
-    top: -50,
   },
    image: {
     width: 200, 
     height: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    flex:1,
-    marginLeft: 89,
     top: 1,
   },text: {
-    top:-60,
   }
 });
 
