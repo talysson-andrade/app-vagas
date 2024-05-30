@@ -2,16 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
-import {image} from 'react-native';
-import logo from './assets/estacio.png';
-import firebase from './configFirebase'
+import firebase from './ConfigFirebase';
+import logo from './assets/Estacio.png';
 
-const db = firebase.database()
+
+const db = firebase.database();
 const sha256 = require('js-sha256');
 
-function sendDataUser(nome, email, cpf, senha){
-  const newUserKey = db.ref().child('/users').push().key;
-  const userPath = '/users'
+function sendDataUser(uid, nome, email, cpf, senha) {
+  const userPath = `/users/${uid}`;
   const userData = {
     name: nome,
     email: email,
@@ -19,16 +18,12 @@ function sendDataUser(nome, email, cpf, senha){
     senha: senha,
     isAdmin: false
   };
-   let updates = {};
-  // Adiciona os dados do usuário ao objeto
-  updates[`${userPath}/${newUserKey}`] = userData;
-  // Envia os dados para o Firebase
-  return db.ref().update(updates);
+  return db.ref(userPath).set(userData);
 }
 
-function generateSHA(text){
-const hash = sha256(text);
-return hash;
+function generateSHA(text) {
+  const hash = sha256(text);
+  return hash;
 }
 
 const CadastroUsuario = () => {
@@ -39,18 +34,14 @@ const CadastroUsuario = () => {
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const navigation = useNavigation();
-  
+
   const validarEmail = (email) => {
-    // Expressão regular para validar o formato do email
     const re = /\S+@\S+\.\S+/;
     return re.test(email);
   };
 
   const formatarCPF = (text) => {
-    // Remove todos os caracteres não numéricos
     let cleaned = ('' + text).replace(/\D/g, '');
-
-    // Adiciona os pontos e o hífen conforme o formato do CPF
     let formatted = '';
     for (let i = 0; i < cleaned.length; i++) {
       if (i === 3 || i === 6) {
@@ -60,54 +51,37 @@ const CadastroUsuario = () => {
       }
       formatted += cleaned[i];
     }
-
     return formatted;
   };
 
-
   const validarCPF = (cpf) => {
-    // Remove caracteres não numéricos do CPF    
     cpf = cpf.replace(/\D/g, '');
-
-     // Adiciona os pontos e o hífen conforme o formato do CPF
-  
-
-    // Verifica se o CPF tem 11 dígitos
     if (cpf.length !== 11) return false;
-
-    // Verifica se todos os dígitos são iguais; se sim, não é um CPF válido
     if (/^(\d)\1{10}$/.test(cpf)) return false;
-
-    // Calcula os dígitos verificadores
     let sum = 0;
     let remainder;
     for (let i = 1; i <= 9; i++) {
       sum += parseInt(cpf.charAt(i - 1)) * (11 - i);
     }
     remainder = (sum * 10) % 11;
-
     if (remainder === 10 || remainder === 11) remainder = 0;
     if (remainder !== parseInt(cpf.charAt(9))) return false;
-
     sum = 0;
     for (let i = 1; i <= 10; i++) {
       sum += parseInt(cpf.charAt(i - 1)) * (12 - i);
     }
     remainder = (sum * 10) % 11;
-
     if (remainder === 10 || remainder === 11) remainder = 0;
     if (remainder !== parseInt(cpf.charAt(10))) return false;
-
     return true;
-    
   };
 
   const validarDataNascimento = (data) => {
     return moment(data, 'DD/MM/YYYY', true).isValid();
   };
 
-  const validarSenha = () => {    
-    return senha.length >=8 && senha=== confirmarSenha;
+  const validarSenha = () => {
+    return senha.length >= 8 && senha === confirmarSenha;
   };
 
   const formatarDataNascimento = (text) => {
@@ -139,41 +113,37 @@ const CadastroUsuario = () => {
     }
 
     if (senha.length < 8) {
-    Alert.alert('Erro', 'A senha deve ter no mínimo 8 caracteres.');
-    return;
-  }
+      Alert.alert('Erro', 'A senha deve ter no mínimo 8 caracteres.');
+      return;
+    }
 
-  if (!validarSenha()) {
-    Alert.alert('Erro', 'As senhas não coincidem.');
-    return;
-  }
-    sendDataUser(nome, email, cpf, generateSHA(senha))
-    .then(() => {
-    console.log("Dados do usuário enviados com sucesso para o Firebase!");
-  })
-  .catch((error) => {
-    console.error("Erro ao enviar dados para o Firebase:", error);
-  });
-    // Aqui você pode prosseguir com o cadastro do usuário
-    Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
-    navigation.navigate('Vagas');
+    if (!validarSenha()) {
+      Alert.alert('Erro', 'As senhas não coincidem.');
+      return;
+    }
+
+    firebase.auth().createUserWithEmailAndPassword(email, senha)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        return sendDataUser(user.uid, nome, email, cpf, generateSHA(senha));
+      })
+      .then(() => {
+        Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
+        navigation.navigate('Vagas');
+      })
+      .catch((error) => {
+        Alert.alert('Erro', 'Erro ao cadastrar usuário.');
+        console.error("Erro ao cadastrar usuário:", error);
+      });
   };
 
   const handleLoginPress = () => {
-    // Lógica para redirecionar o usuário para a tela de login    
-    // Navega para a tela de login
     navigation.navigate('Login');
-    console.log('Redirecionar para a tela de login');
   };
 
-  
   return (
     <View style={styles.container}>
-    
-    <Image source={logo}
-      style={styles.image}
-     />
-        
+      <Image source={logo} style={styles.image} />
       <Text style={styles.text}>Nome Completo</Text>
       <TextInput
         style={styles.input}
@@ -193,7 +163,7 @@ const CadastroUsuario = () => {
         onChangeText={(text) => setCpf(formatarCPF(text))}
         value={cpf}
         keyboardType="numeric"
-        maxLength={14} // Adicionamos 14 para acomodar os pontos e o hífen
+        maxLength={14}
       />
       <Text style={styles.text}>Data de Nascimento</Text>
       <TextInput
@@ -212,31 +182,28 @@ const CadastroUsuario = () => {
       />
       <Text style={styles.text}>Confirme sua Senha</Text>
       <TextInput
-
         style={styles.input}
         onChangeText={setConfirmarSenha}
         value={confirmarSenha}
         secureTextEntry
-      />     
+      />
       <View style={styles.grid}>
         <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
           <Text style={styles.buttonText}>Entre</Text>
         </TouchableOpacity>
-        </View>
-
-        <View>
+      </View>
+      <View>
         <TouchableOpacity style={styles.button} onPress={cadastrarUsuario}>
           <Text style={styles.buttonText}>Cadastre-se</Text>
         </TouchableOpacity>
       </View>
-           
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor : '#white',
+    backgroundColor: 'white',
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 20,
@@ -250,7 +217,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 20,
     top: -58,
-    
   },
   button: {
     backgroundColor: '#000080',
@@ -268,17 +234,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   image: {
-    width: 200, 
+    width: 200,
     height: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    flex:1,
+    flex: 1,
     marginLeft: 89,
     top: 1,
-  },text: {
-    top:-60,
-  }
-  
+  },
+  text: {
+    top: -60,
+  },
+  grid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    top: -50,
+  },
 });
 
 export default CadastroUsuario;

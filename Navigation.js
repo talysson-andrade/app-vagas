@@ -5,18 +5,19 @@ import { NavigationContainer } from '@react-navigation/native';
 import CreateAccountScreen from './CreateAccountScreen';
 import LoginScreen from './LoginScreen';
 import VagasScreen from './VagasScreen';
-import UserScreen from './UserScreen';
+import UserProfileScreen from './UserProfileScreen';
 import DescricaoVagaScreen from './DescricaoVagaScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+
 const MainStack = () => {
   return (
-    <Stack.Navigator initialRouteName="Cadastro" headerMode="none">
+    <Stack.Navigator initialRouteName="Login" headerMode="none">
+       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Cadastro" component={CreateAccountScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Vagas" component={VagasScreen} />
     </Stack.Navigator>
   );
@@ -41,7 +42,7 @@ const MainTab = () => {
       })}
     >
       <Tab.Screen name="Vagas" component={VagasScreen} />
-      <Tab.Screen name="Perfil" component={UserScreen} />
+      <Tab.Screen name="Perfil" component={UserProfileScreen} />
     </Tab.Navigator>
   );
 };

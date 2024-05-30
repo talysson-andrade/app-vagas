@@ -1,38 +1,40 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity,Image} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {image} from 'react-native';
-import logo from './assets/estacio.png';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import firebase from './ConfigFirebase'; // Importe e configure o Firebase corretamente
 
-
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigation = useNavigation();
 
   const handleLoginPress = () => {
-    // Lógica de autenticação
-    // Aqui você pode fazer a validação do email e senha
-    // Se for válido, navegue para a próxima tela
-    if (email && password) {
-     navigation.navigate('Vagas'); // Substitua 'Main' pelo nome da tela que você quer navegar
-    } else {
-      alert('Por favor, insira seu email e senha.');
+    if (!email || !password) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      return;
     }
+
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Autenticação bem-sucedida, navegue para a próxima tela
+        Alert.alert('Sucesso', 'Login realizado com sucesso!');
+        navigation.navigate('Vagas');
+      })
+      .catch((error) => {
+        console.error(error);
+        // Ocorreu um erro durante a autenticação, exiba uma mensagem de erro
+        Alert.alert('Erro', 'O email ou senha inseridos estão incorretos. Por favor, tente novamente.');
+      });
   };
 
   const navigateToCadastro = () => {
-    // Navegue de volta para a tela de cadastro
+    // Navegue para a tela de cadastro
     navigation.navigate('Cadastro');
   };
 
   return (
     <View style={styles.container}>
-    
-    <Image source={logo}
-      style={styles.image}
-     />
-
-      <Text style={styles.text}> Login </Text>
+      <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -48,17 +50,12 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <View style={styles.grid}>
-        <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-        </View>
-
-        <View>
-        <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
-          <Text style={styles.buttonText}>Voltar para cadastro</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={navigateToCadastro}>
+        <Text style={styles.link}>Ainda não tem uma conta? Cadastre-se aqui</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -68,9 +65,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
   },
   input: {
-    width: '80%',
+    width: '100%',
     height: 40,
     borderWidth: 1,
     borderColor: 'black',
@@ -81,26 +83,19 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#000080',
     paddingVertical: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     borderRadius: 20,
-    marginRight: 0,
-    marginTop: 10,
-    textAlign: 'center',
-
+    marginVertical: 10,
   },
-   buttonText: {
+  buttonText: {
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
   },
-   image: {
-    width: 200, 
-    height: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-    top: 1,
-  },text: {
-  }
+  link: {
+    marginTop: 20,
+    color: 'blue',
+  },
 });
 
 export default LoginScreen;

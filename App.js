@@ -7,7 +7,8 @@ import CreateAccountScreen from './CreateAccountScreen';
 import LoginScreen from './LoginScreen';
 import VagasScreen from './VagasScreen';
 import DetalhesVagasScreen from './DescricaoVagaScreen';
-import UserScreen from './UserScreen';
+import UserProfileScreen from './UserProfileScreen';
+
 
 
 const Stack = createStackNavigator();
@@ -15,13 +16,13 @@ const Stack = createStackNavigator();
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Cadastro" headerMode="none">
-        <Stack.Screen name="Cadastro" component={CreateAccountScreen} />
-        
+      <Stack.Navigator initialRouteName="Login" headerMode="none">
         <Stack.Screen name="Login" component={LoginScreen} />
+        
+        <Stack.Screen name="Cadastro" component={CreateAccountScreen} />
         <Stack.Screen name="Vagas" component={VagasScreen} />
         <Stack.Screen name="Detalhe vaga" component={DetalhesVagasScreen} />
-        <Stack.Screen name="Perfil" component={UserScreen} />
+        <Stack.Screen name="Perfil" component={UserProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
