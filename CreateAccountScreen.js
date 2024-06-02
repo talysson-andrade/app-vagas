@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
-import firebase from './ConfigFirebase';
-import logo from './assets/Estacio.png';
+import firebase from './configFirebase';
+import logo from './assets/logo-estacio.png';
 
 
 const db = firebase.database();
@@ -143,59 +143,69 @@ const CadastroUsuario = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={logo} style={styles.image} />
-      <Text style={styles.text}>Nome Completo</Text>
+      <Image source={logo} style={styles.image} resizeMethod='contain'/>
+      <View  style={styles.form}>
+
+      <Text style={styles.title}>Crie sua conta</Text>
+
       <TextInput
         style={styles.input}
         onChangeText={setNome}
         value={nome}
+        placeholder="Nome Completo"
+        placeholderTextColor='gray'
       />
-      <Text style={styles.text}>Email</Text>
       <TextInput
         style={styles.input}
         onChangeText={setEmail}
         value={email}
         keyboardType="email-address"
+        placeholder="Email"
+        placeholderTextColor='gray'
       />
-      <Text style={styles.text}>CPF</Text>
       <TextInput
         style={styles.input}
         onChangeText={(text) => setCpf(formatarCPF(text))}
         value={cpf}
         keyboardType="numeric"
         maxLength={14}
+        placeholder="CPF"
+        placeholderTextColor='gray'
       />
-      <Text style={styles.text}>Data de Nascimento</Text>
       <TextInput
         style={styles.input}
         onChangeText={(text) => setDataNascimento(formatarDataNascimento(text))}
         value={dataNascimento}
         keyboardType="numeric"
         maxLength={10}
+        placeholder="Data de Nascimento"
+        placeholderTextColor='gray'
       />
-      <Text style={styles.text}>Senha</Text>
       <TextInput
         style={styles.input}
         onChangeText={setSenha}
         value={senha}
         secureTextEntry
+        placeholder="Senha"
+        placeholderTextColor='gray'
       />
-      <Text style={styles.text}>Confirme sua Senha</Text>
       <TextInput
         style={styles.input}
         onChangeText={setConfirmarSenha}
         value={confirmarSenha}
         secureTextEntry
+        placeholder="Confirme sua senha"
+        placeholderTextColor='gray'
       />
-      <View style={styles.grid}>
-        <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
-          <Text style={styles.buttonText}>Entre</Text>
-        </TouchableOpacity>
       </View>
-      <View>
+      <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={cadastrarUsuario}>
-          <Text style={styles.buttonText}>Cadastre-se</Text>
+          <Text style={styles.buttonText}>Cadastrar</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.linkLogin} onPress={handleLoginPress}>
+          <Text style={styles.linkLoginText}>Voltar para o login</Text>
+        </TouchableOpacity>
+
       </View>
     </View>
   );
@@ -203,52 +213,59 @@ const CadastroUsuario = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: '#F5F5F5',
     flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    borderRadius: 20,
+    alignItems: 'center',
+    paddingHorizontal: 25,
+    
   },
   input: {
     height: 40,
     borderColor: 'black',
     borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     borderRadius: 20,
-    top: -58,
   },
   button: {
     backgroundColor: '#000080',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    padding: 10,
     borderRadius: 20,
-    marginRight: 0,
-    marginTop: 10,
     textAlign: 'center',
-    top: -50,
+    width: "80%",
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     textAlign: 'center',
   },
   image: {
-    width: 200,
-    height: 100,
+    width: 150,
+    height: 150,
+    marginTop: 60,
+  },
+  form:{
+    marginTop: 45,
+    width: "100%",
+    gap: 15,
+  },
+  buttonContainer:{
+    width: "100%",
+    marginTop: 50,
+    gap: 15,
     alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    marginLeft: 89,
-    top: 1,
   },
-  text: {
-    top: -60,
+  linkLogin:{
+    padding: 10,
   },
-  grid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    top: -50,
+  linkLoginText:{
+    color: '#000080',
+    fontSize: 16,
+    textDecorationLine: 'underline',
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    paddingHorizontal: 15,
   },
 });
 

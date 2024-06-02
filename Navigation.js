@@ -8,17 +8,21 @@ import VagasScreen from './VagasScreen';
 import UserProfileScreen from './UserProfileScreen';
 import DescricaoVagaScreen from './DescricaoVagaScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
+import CreateVagaScreen from './CreateVagaScreen'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-
 const MainStack = () => {
   return (
-    <Stack.Navigator initialRouteName="Login" headerMode="none">
-       <Stack.Screen name="Login" component={LoginScreen} />
+    <Stack.Navigator initialRouteName="Vagas" headerMode="none">
       <Stack.Screen name="Cadastro" component={CreateAccountScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Vagas" component={VagasScreen} />
+      <Stack.Screen name="CadastroVaga" component={CreateVagaScreen} />
+      <Stack.Screen name="Perfil" component={UserProfileScreen} />
+      <Stack.Screen name="DescricaoVaga" component={DescricaoVagaScreen} />
+
     </Stack.Navigator>
   );
 };
@@ -42,7 +46,7 @@ const MainTab = () => {
       })}
     >
       <Tab.Screen name="Vagas" component={VagasScreen} />
-      <Tab.Screen name="Perfil" component={UserProfileScreen} />
+      <Tab.Screen name="Perfil" component={UserScreen} />
     </Tab.Navigator>
   );
 };

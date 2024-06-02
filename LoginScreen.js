@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import firebase from './ConfigFirebase'; // Importe e configure o Firebase corretamente
+import firebase from './configFirebase';
+import logo from './assets/logo-estacio.png'
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -16,28 +17,29 @@ const LoginScreen = () => {
 
     firebase.auth().signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
-        // Autenticação bem-sucedida, navegue para a próxima tela
-        Alert.alert('Sucesso', 'Login realizado com sucesso!');
+        Alert.alert('Sucesso', 'Login realizado com sucesso');
         navigation.navigate('Vagas');
       })
       .catch((error) => {
         console.error(error);
-        // Ocorreu um erro durante a autenticação, exiba uma mensagem de erro
         Alert.alert('Erro', 'O email ou senha inseridos estão incorretos. Por favor, tente novamente.');
       });
   };
 
+
   const navigateToCadastro = () => {
-    // Navegue para a tela de cadastro
     navigation.navigate('Cadastro');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Image source={logo} style={styles.imagem} resizeMode='contain'/>
+      <Text style={styles.title}>Vagas Estácio</Text>
+      <View style={styles.inputContainer}>
       <TextInput
         style={styles.input}
         placeholder="Email"
+        placeholderTextColor="gray"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -46,12 +48,15 @@ const LoginScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Senha"
+        placeholderTextColor="gray"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        keyboardType='default'
       />
+      </View>
       <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
-        <Text style={styles.buttonText}>Login</Text>
+        <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={navigateToCadastro}>
         <Text style={styles.link}>Ainda não tem uma conta? Cadastre-se aqui</Text>
@@ -62,23 +67,27 @@ const LoginScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    paddingTop: 90,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 25,
+    backgroundColor: '#F5F5F5',
   },
   title: {
-    fontSize: 24,
+    marginTop: 40,
+    fontSize: 32,
     marginBottom: 20,
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
   },
   input: {
     width: '100%',
-    height: 40,
+    height: 50,
     borderWidth: 1,
     borderColor: 'black',
-    marginVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius: 20,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    fontSize: 16,
   },
   button: {
     backgroundColor: '#000080',
@@ -86,15 +95,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 20,
     marginVertical: 10,
+    width: "70%"
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     textAlign: 'center',
+    
   },
   link: {
-    marginTop: 20,
+    marginTop: 30,
     color: 'blue',
+    fontSize: 16,
+    textDecorationLine: 'underline',
+  },
+  imagem : {
+    height : 160,
+    width : 160,
+  },
+  inputContainer:{
+    width: "100%",
+    marginVertical: 40,
+    gap: 11,
+
   },
 });
 
